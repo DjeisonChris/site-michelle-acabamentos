@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Orçamento - Michelle Acabamentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        
+        /* --- ESTILOS ADICIONADOS PARA O CONTROLE DE QUANTIDADE --- */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem; /* rounded-md */
+        }
+        .quantity-btn {
+            background-color: #f7fafc; /* gray-50 */
+            padding: 0.5rem 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4a5568; /* gray-700 */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .quantity-btn:hover {
+            background-color: #e2e8f0; /* gray-200 */
+        }
+        .quantity-btn:first-of-type {
+            border-right: 1px solid #e2e8f0;
+            border-top-left-radius: 0.375rem;
+            border-bottom-left-radius: 0.375rem;
+        }
+        .quantity-btn:last-of-type {
+            border-left: 1px solid #e2e8f0;
+            border-top-right-radius: 0.375rem;
+            border-bottom-right-radius: 0.375rem;
+        }
+        .quantity-display {
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+        }
+        /* --- FIM DOS ESTILOS ADICIONADOS --- */
+
+
+        @media print {
+            header, #budget-actions, .trash-button, .quantity-controls { display: none !important; }
+            #print-header { display: block !important; }
+            main { margin: 0; padding: 0; }
+            body { background-color: #fff; }
+            #budget-list { box-shadow: none; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div id="print-header" style="display: none; padding: 20px;">
+        <img src="https://i.ibb.co/0HmBNqd/Logo-6.png" alt="Logo Michelle Acabamentos" style="height: 80px; margin-bottom: 20px;">
+        <div style="font-size: 12px;">
+            <p><strong>Michelle Acabamentos</strong></p>
+            <p>R. 2350 Catágua, Nª 196 - Pontal do Norte, Itapoá - SC</p>
+            <p><strong>Contato:</strong> (47) 99697-0021 | <strong>Email:</strong> michelleacabamentos@gmail.com</p>
+        </div>
+        <hr style="margin-top: 15px; margin-bottom: 20px;">
+        <h1 style="font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px;">Lista de Orçamento</h1>
+    </div>
+
+    <header class="bg-white py-4 shadow-md text-center">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800">Minha Lista de Orçamento</h1>
+            <a href="index.html" class="text-blue-600 hover:underline mt-2 inline-block">
+                <i class="fa-solid fa-arrow-left"></i> Voltar para as ofertas
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="budget-list" class="bg-white p-4 sm:p-6 rounded-lg shadow-lg"></div>
+        <div id="budget-actions" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4"></div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const budgetListContainer = document.getElementById('budget-list');
+            const budgetActionsContainer = document.getElementById('budget-actions');
+            const apiUrl = 'https://script.google.com/macros/s/AKfycbyOLlP99avxI7kIRXBTgKx_oDt1PMBa2MpOyCZVv5H54AB4KCXYGeUk4YlwjW_oj3J2rg/exec';
+            let budget = [];
+
+            // Função auxiliar para buscar a lista completa de produtos (necessária para links compartilhados)
+            async function getProductList() {
+                let products = JSON.parse(sessionStorage.getItem('allProducts'));
+                if (products) return products;
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Não foi possível carregar os dados dos produtos.");
+                const data = await response.json();
+                
+                const allProducts = data.products.map(p => ({ ...p, price: parseFloat(p.price) }));
+                sessionStorage.setItem('allProducts', JSON.stringify(allProducts));
+                return allProducts;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const sharedListData = params.get('lista');
+
+            try {
+                if (sharedListData) {
+                    budgetListContainer.innerHTML = `<div class="text-center text-gray-600 py-12"><i class="fa-solid fa-spinner fa-spin fa-3x mb-4"></i><p class="font-semibold">Carregando lista compartilhada...</p></div>`;
+                    budgetActionsContainer.style.display = 'none';
+
+                    const allProducts = await getProductList();
+                    const productIds = atob(sharedListData).split(',').map(Number);
+                    budget = allProducts.filter(p => productIds.includes(p.id));
+                    localStorage.setItem('michelleBudget', JSON.stringify(budget)); // Salva com o nome correto
+                } else {
+                    budget = JSON.parse(localStorage.getItem('michelleBudget')) || [];
+                }
+                
+                // *** LÓGICA ADICIONADA: Garante que cada item tenha uma quantidade ***
+                budget = budget.map(item => ({ ...item, quantity: item.quantity || 1 }));
+
+                if (budget.length === 0) {
+                    budgetListContainer.innerHTML = '<p class="text-center text-gray-600 py-8">Sua lista de orçamento está vazia.</p>';
+                    budgetActionsContainer.style.display = 'none';
+                    return;
+                }
+
+                // Renderiza a lista de produtos
+                let total = 0;
+                let budgetHtml = '<div class="divide-y divide-gray-200">';
+                let productListText = '';
+
+                budget.forEach(product => {
+                    const price = parseFloat(product.price) || 0;
+                    
+                    // *** LÓGICA ALTERADA: Calcula o total com base na quantidade ***
+                    total += price * product.quantity;
+                    
+                    // *** HTML ALTERADO: Adiciona os controles de quantidade ***
+                    budgetHtml += `<div class="py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div class="flex items-center w-full sm:w-2/3">
+                                        <img src="${product.image}" alt="${product.name}" class="h-20 w-20 object-contain mr-4 rounded-md bg-white border">
+                                        <div class="flex-grow">
+                                            <h3 class="font-semibold text-gray-800">${product.name}</h3><p class="text-sm text-gray-500">Código: ${product.code}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between w-full sm:w-1/3">
+                                       <div class="quantity-controls">
+                                            <button class="quantity-btn" onclick="updateQuantity(${product.id}, -1)">-</button>
+                                            <span class="quantity-display">${product.quantity}</span>
+                                            <button class="quantity-btn" onclick="updateQuantity(${product.id}, 1)">+</button>
+                                       </div>
+                                       <p class="text-lg font-bold text-red-600 text-right w-32">${(price * product.quantity).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                       <button onclick="removeFromBudget(${product.id})" class="trash-button text-red-500 hover:text-red-700 transition-colors p-2 rounded-md hover:bg-red-100 ml-4" aria-label="Remover item"><i class="fa-solid fa-trash-can fa-lg"></i></button>
+                                    </div>
+                                </div>`;
+
+                    // *** LÓGICA ALTERADA: Inclui quantidade no texto do WhatsApp ***
+                    productListText += `*${product.quantity}x* ${product.name} (Cód: ${product.code}) - ${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}\n`;
+                });
+
+                budgetHtml += `</div><div class="mt-6 pt-6 border-t-2 border-dashed text-right">
+                                <span class="text-xl font-semibold text-gray-700">Total Estimado:</span>
+                                <span id="total-price" class="text-3xl font-bold text-green-600 ml-4">${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                             </div>`;
+                budgetListContainer.innerHTML = budgetHtml;
+                
+                // Renderiza os botões de ação
+                budgetActionsContainer.style.display = 'grid';
+                const whatsappMessage = `Olá! Gostaria de fazer um orçamento para os seguintes itens que selecionei no site da Michelle Acabamentos:\n\n${productListText}\n*Total Estimado:* ${total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                const hrefWhatsapp = `https://wa.me/5547996970021?text=${encodeURIComponent(whatsappMessage)}`;
+
+                budgetActionsContainer.innerHTML = `
+                    <a href="${hrefWhatsapp}" target="_blank" rel="noopener" class="w-full text-center bg-green-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-600 transition flex items-center justify-center gap-2 text-lg"><i class="fa-brands fa-whatsapp"></i> Enviar Orçamento</a>
+                    <button onclick="shareBudget()" class="w-full text-center bg-gray-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-600 transition flex items-center justify-center gap-2 text-lg"><i class="fa-solid fa-share-alt"></i> Compartilhar</button>
+                    <button onclick="window.print()" class="w-full text-center bg-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-800 transition flex items-center justify-center gap-2 text-lg"><i class="fa-solid fa-print"></i> Imprimir</button>
+                    <button onclick="clearBudget()" class="w-full text-center bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition flex items-center justify-center gap-2 text-lg"><i class="fa-solid fa-eraser"></i> Limpar Lista</button>
+                `;
+
+            } catch (e) {
+                budgetListContainer.innerHTML = `<p class="text-red-500 text-center py-8">Erro ao carregar a lista: ${e.message}</p>`;
+                budgetActionsContainer.style.display = 'none';
+            }
+        });
+        
+        // *** FUNÇÃO ADICIONADA: Atualiza a quantidade de um item ***
+        function updateQuantity(productId, change) {
+            let budget = JSON.parse(localStorage.getItem('michelleBudget')) || [];
+            const productIndex = budget.findIndex(item => item.id === productId);
+
+            if (productIndex > -1) {
+                // Garante que a quantidade exista antes de modificar
+                budget[productIndex].quantity = (budget[productIndex].quantity || 1) + change;
+
+                // Impede que a quantidade seja menor que 1
+                if (budget[productIndex].quantity < 1) {
+                    budget[productIndex].quantity = 1;
+                }
+                
+                localStorage.setItem('michelleBudget', JSON.stringify(budget));
+                location.reload();
+            }
+        }
+
+        function removeFromBudget(productId) {
+            let budget = JSON.parse(localStorage.getItem('michelleBudget')) || [];
+            budget = budget.filter(item => item.id !== productId);
+            localStorage.setItem('michelleBudget', JSON.stringify(budget));
+            location.reload(); 
+        }
+
+        function clearBudget() {
+            if (confirm('Tem certeza que deseja apagar todos os itens da lista?')) {
+                localStorage.removeItem('michelleBudget');
+                location.reload();
+            }
+        }
+
+        function shareBudget() {
+            const budget = JSON.parse(localStorage.getItem('michelleBudget')) || [];
+            if (budget.length === 0) { alert("Sua lista está vazia."); return; }
+            const productIds = budget.map(p => p.id).join(',');
+            const encodedList = btoa(productIds);
+            const url = `${window.location.origin}${window.location.pathname}?lista=${encodedList}`;
+            if (navigator.share) {
+                navigator.share({ title: 'Orçamento Michelle Acabamentos', text: 'Veja esta lista de orçamento que montei!', url: url }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(url).then(() => { alert('Link do orçamento copiado!'); });
+            }
+        }
+    </script>
+</body>
+</html>

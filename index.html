@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="google-site-verification" content="LAUxnJ2FNQqmFEqnc8qfIg3-cyCpjRFeICrpkr_JzY4" />
+    <link rel="icon" href="https://i.ibb.co/Vc0njpwR/Icone.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michelle Acabamentos - Ofertas em Pisos, Tintas, Porcelanatos e Mais</title>
+    
+    <script type="application/ld+json">
+    { "@context": "https://schema.org", "@type": "Organization", "name": "Michelle Acabamentos", "url": "https://ofertasmichelle.com.br", "logo": "https://i.ibb.co/0HmBNqd/Logo-6.png", "sameAs": ["https://www.instagram.com/michelleacabamentos/", "https://wa.me/47996970021"], "contactPoint": { "@type": "ContactPoint", "telephone": "+5547996970021", "contactType": "Customer Service" } }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        body { font-family: 'Montserrat', sans-serif; background-color: #f8f9fa; }
+
+        /* ESTILOS MIGRADOS E ADAPTADOS PARA MICHELLE ACABAMENTOS */
+        .destaque-card { background: linear-gradient(170deg, #ffebee, #ffffff 50%); border: 2px solid #FF3A3A; box-shadow: 0 8px 25px rgba(255, 58, 58, 0.2); }
+        .destaque-card .product-image { background-color: white; }
+        .destaque-card .new-price { color: #FF3A3A; font-size: 1.7rem; }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(255, 58, 58, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 58, 58, 0.8); } }
+        .info-adicional { font-size: 0.8rem; font-weight: 600; color: #854d0e; background-color: #fefce8; border: 1px dashed #facc15; border-radius: 6px; padding: 6px 10px; text-align: center; animation: pulse-glow 2.5s infinite; }
+        .propaganda-card { background: linear-gradient(45deg, #c31327, #a11020); color: white; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease; height: 100%; }
+        .propaganda-card:hover { transform: translateY(-5px); }
+        .propaganda-card h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .propaganda-card .cta-button { background-color: #fff; color: #c31327; padding: 0.75rem 1.5rem; border-radius: 20px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+        .propaganda-card .cta-button:hover { background-color: #f0f0f0; transform: scale(1.05); }
+        .new-badge { position: absolute; top: 10px; left: 10px; background-color: #0066cc; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.875rem; z-index: 10; }
+        .soldout-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background: #d90000; color: #fff; padding: 10px 40px; border-radius: 8px; font-weight: 800; font-size: 1.5rem; letter-spacing: 1.5px; opacity: 0.95; pointer-events: none; }
+        
+        /* ESTILOS GERAIS */
+        .product-card { transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .product-card-content { display: flex; flex-direction: column; flex-grow: 1; padding: 1rem; }
+        .product-image { height: 200px; object-fit: contain; background-color: white; }
+        .category-btn { transition: all 0.3s ease; border: 1px solid #0066CC; color: #0066CC; font-weight: 600; font-size: 0.85rem; border-radius: 20px; padding: 8px 16px;}
+        .category-btn:hover, .category-btn.active { background-color: #0066CC; color: white; }
+        .price-tag { position: absolute; top: 10px; right: 10px; background-color: #FF3A3A; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 14px; z-index: 10; }
+        .old-price { text-decoration: line-through; color: #6c757d; font-size: 0.9rem; }
+        .new-price { color: #28a745; font-weight: 700; font-size: 1.25rem; }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25D366; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; transition: all 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); }
+        .promotion-header { background-color: #fef3c7; color: #92400e; font-weight: 600; font-size: 14px; }
+        .modal-overlay, .search-modal { background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .modal-overlay.active, .search-modal.active { opacity: 1; visibility: visible; }
+        .modal-overlay { justify-content: center; align-items: center; }
+        .modal-content { background-color: white; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; transform: translateY(-50px); transition: all 0.3s; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .search-modal { align-items: flex-start; justify-content: center; padding-top: 100; }
+        .search-container { background-color: white; border-radius: 8px; width: 90%; max-width: 500px; padding: 20px; }
+        .sort-btn { transition: all 0.3s; }
+        .sort-btn.active { background-color: #0066CC; color: white; }
+        .whatsapp-btn { background-color: #25D366; color: white; transition: all 0.3s; }
+        .whatsapp-btn:hover { background-color: #128C7E; }
+        .search-btn { background-color: #c31327; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+        .search-btn:hover { background-color: #a11020; }
+        .maps-btn { background-color: #dc2626; /* Vermelho mais claro */ color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; display: inline-flex; alignItems: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); }
+        .maps-btn:hover { background-color: #b81d22; /* Vermelho um pouco mais escuro no hover */ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        .maps-btn svg { width: 1.25rem; height: 1.25rem; } /* Ajusta o tamanho do ícone se necessário */
+        @media (max-width: 768px) {
+            header .container { flex-direction: column; align-items: center; }
+            header .flex.items-center.gap-4 { margin-top: 10px; width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="countdown" class="bg-red-500 text-white py-2 text-center font-bold">Promoção termina em: <span id="countdown-timer"></span></div>
+    <div id="promo-validity-text" class="promotion-header text-center py-1"></div>
+    
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://i.ibb.co/0HmBNqd/Logo-6.png" alt="Logo Michelle" class="h-16 mr-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-red-600">Michelle</h1>
+                    <p class="font-semibold text-gray-700 -mt-1">ACABAMENTOS</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="orcamento.html" class="flex items-center text-blue-600 hover:text-blue-800 transition">
+                    <i class="fa-solid fa-list-check mr-2 text-xl"></i>
+                    <span class="font-semibold hidden sm:inline">Meu Orçamento</span>
+                    <span id="budget-counter" class="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ml-2">0</span>
+                </a>
+                <button class="search-btn" id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="w-full"><video class="w-full object-cover max-h-[400px]" src="banner/banner.mp4" autoplay loop muted playsinline></video></div>
+    
+    <section id="secao-destaques" class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold mb-6 text-center text-red-700">Ofertas Imperdíveis</h2>
+        <div id="destaques-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </section>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="categoryButtonsContainer" class="flex flex-wrap justify-center gap-2 mb-8"></div>
+        <div>
+          <span class="font-semibold block mb-2">Ordenar por:</span>
+          <div class="flex flex-wrap gap-2">
+              <button class="sort-btn px-4 py-2 bg-blue-600 text-white rounded-lg active" data-sort="discount">Desconto</button>
+              <button class="sort-btn px-4 py-2 bg-gray-200 rounded-lg" data-sort="price-asc">Preço ↓</button>
+              <button class="sort-btn px-4 py-2 bg-gray-200 rounded-lg" data-sort="price-desc">Preço ↑</button>
+              <button id="sort-new-btn" class="sort-btn px-4 py-2 bg-gray-200 rounded-lg" data-sort="new" style="display: none;">Lançamento</button>
+          </div>
+        </div>
+        <h2 class="text-3xl font-bold my-6 text-center text-gray-800">Produtos em OFERTA</h2>
+        <div id="loadingProducts" class="text-center py-12"><div role="status"><svg aria-hidden="true" class="inline w-8 h-8 mr-2 text-gray-200 animate-spin fill-red-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg><span class="sr-only">Carregando...</span></div></div>
+        <div id="noResults" class="hidden text-center py-12"><h3 class="text-xl">Nenhum produto encontrado</h3></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="productsContainer"></div>
+    </main>
+
+    <footer class="bg-gray-800 text-white pt-12 pb-6">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-red-500 pb-2 inline-block">Sobre a Loja</h3>
+                <p class="text-gray-300 mb-4">Sua loja completa de acabamentos, do básico ao toque final.</p>
+                <p class="text-gray-300"><strong>CNPJ:</strong> 13.374.035/0003-02</p>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-red-500 pb-2 inline-block">Links Úteis</h3>
+                <ul class="text-gray-300 space-y-2">
+                    <li><a href="#" class="hover:text-red-400 transition">Início</a></li>
+                    <li><a href="orcamento.html" class="hover:text-red-400 transition">Meu Orçamento</a></li>
+                    <li><a href="#categoryButtonsContainer" class="hover:text-red-400 transition">Categorias de Produtos</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-red-500 pb-2 inline-block">Atendimento</h3>
+                <ul class="text-gray-300 space-y-2">
+                    <li class="flex items-center"><i class="fa-brands fa-whatsapp mr-3 w-4"></i> (47) 99697-0021</li>
+                    <li class="flex items-center"><i class="fa-solid fa-phone mr-3 w-4"></i> (47) 99697-0090</li>
+                    <li class="flex items-center"><i class="fa-solid fa-envelope mr-3 w-4"></i> <a href="mailto:michelleacabamentos@gmail.com" class="hover:text-red-400">michelleacabamentos@gmail.com</a></li>
+                    <li class="mt-3 font-semibold">Seg à Sex: 07:30h - 18:30h</li>
+                    <li class="font-semibold">Sáb: 07:30h - 17:00h</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold mb-4 border-b-2 border-red-500 pb-2 inline-block">Onde Estamos</h3>
+                <p class="text-gray-300 mb-4">
+                    <i class="fa-solid fa-map-marker-alt mr-2"></i>
+                    R. 2350 Catágua, Nª 196<br>Pontal do Norte, Itapoá - SC
+                </p>
+                <a class="maps-btn mt-2 inline-block bg-red-600 hover:bg-red-700" href="https://www.google.com/maps/place/Michelle+Acabamentos/@-26.1483004,-48.5934941,3a,75y,81.18h,92.75t/data=!3m7!1e1!3m5!1s9ZviMCf5o7NiTLYgCDjNdQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-2.7456043053188495%26panoid%3D9ZviMCf5o7NiTLYgCDjNdQ%26yaw%3D81.18073176648065!7i16384!8i8192!4m7!3m6!1s0x94d95148fc8788eb:0x6877c13a1a84f271!8m2!3d-26.1483155!4d-48.5933706!10e5!16s%2Fg%2F11lvqqh277?entry=ttu&g_ep=EgoyMDI1MDczMC4wIKXMDSoASAFQAw%3D%3D" rel="noopener noreferrer" target="_blank">
+                    <i class="fa-solid fa-route"></i>
+                    <span>Ver no Mapa</span>
+                </a>
+            </div>
+
+        </div>
+
+        <div class="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <h4 class="font-semibold mb-2 text-center md:text-left">Formas de Pagamento</h4>
+                <div class="flex items-center gap-4 text-gray-300">
+                    <i class="fa-brands fa-cc-visa fa-2x"></i>
+                    <i class="fa-brands fa-cc-mastercard fa-2x"></i>
+                    <i class="fa-brands fa-pix fa-2x"></i>
+                    <span class="text-sm">e mais</span>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-2 text-center md:text-left">Siga-nos</h4>
+                <div class="flex justify-center items-center gap-4">
+                    <a href="https://www.instagram.com/michelleacabamentos/" target="_blank" rel="noopener" class="text-2xl text-gray-300 hover:text-pink-400 transition"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400 text-sm">
+            <p>© 2025 Michelle Acabamentos. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+    
+    <a href="https://wa.me/47996970021?text=Ol%C3%A1!%20Vim%20pelo%20site%20de%20ofertas%20da%20Michelle%20Acabamentos%20e%20gostaria%20de%20uma%20ajuda." target="_blank" rel="noopener" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content"><span class="close-modal">×</span><div id="modalContent" class="p-6"></div></div>
+    </div>
+    
+    <div class="search-modal" id="searchModal">
+        <div class="search-container">
+            <div class="mb-4"><input id="searchInput" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-lg" placeholder="Digite o nome ou código..." type="text"/></div>
+            <div id="searchResults" class="mt-4 max-h-80 overflow-y-auto"></div>
+        </div>
+    </div>
+    
+<script>
+    // ===================================================================
+// FUNÇÃO PARA ATIVAR LINKS DOS CARDS DE PROPAGANDA
+// ===================================================================
+function addAdCardListeners() {
+    document.querySelectorAll('[data-category-link]').forEach(link => {
+        const categoryToFilter = link.dataset.categoryLink;
+        if (categoryToFilter) { // Só adiciona o listener se houver uma categoria_alvo
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // Impede o link de pular para o topo da página
+
+                // Encontra o botão da categoria correspondente
+                const categoryButton = document.querySelector(`.category-btn[data-category="${categoryToFilter}"]`);
+
+                if (categoryButton) {
+                    // Simula o clique no botão da categoria
+                    categoryButton.click();
+
+                    // Rola a tela suavemente para a seção de categorias
+                    const categoryContainer = document.getElementById('categoryButtonsContainer');
+                    categoryContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+    });
+}
+// ===================================================================
+// SCRIPT FINAL, CORRIGIDO E REORGANIZADO
+// ===================================================================
+
+// 1. VARIÁVEIS GLOBAIS
+let allProducts = [];
+let propagandaData = [];
+let siteConfig = {};
+let currentCategory = "all";
+let currentSort = "discount";
+const apiUrl = 'https://script.google.com/macros/s/AKfycbyOLlP99avxI7kIRXBTgKx_oDt1PMBa2MpOyCZVv5H54AB4KCXYGeUk4YlwjW_oj3J2rg/exec';
+
+// ===================================================================
+// FUNÇÕES AUXILIARES
+// ===================================================================
+
+function getBudget() { return JSON.parse(localStorage.getItem('michelleBudget')) || []; }
+function saveBudget(budget) { localStorage.setItem('michelleBudget', JSON.stringify(budget)); updateBudgetCounter(); }
+function updateBudgetCounter() {
+    const counter = document.getElementById('budget-counter');
+    if (counter) counter.textContent = getBudget().length;
+}
+
+function addToBudget(productId) {
+   const product = allProducts.find(p => p.id === productId);
+   if (!product) return;
+   let budget = getBudget();
+   if (budget.some(item => item.id === productId)) {
+       alert('Este produto já está na sua lista de orçamento.'); return;
+    }
+   budget.push(product);
+   saveBudget(budget);
+   alert(`"${product.name}" foi adicionado ao seu orçamento!`);
+}
+function calculateDiscount(oldPrice, price) {
+    if (!oldPrice || oldPrice <= price) return 0;
+    return Math.round(((oldPrice - price) / oldPrice) * 100);
+}
+function formatPrice(price) {
+    if (typeof price !== 'number') return "R$ 0,00";
+    return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+function formatDate(dateObject) {
+    const date = new Date(dateObject);
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+}
+function startCountdown(endDate, timerElement) {
+    if (!endDate || !timerElement) return;
+    const promoEndDate = new Date(endDate);
+    promoEndDate.setHours(23, 59, 59, 999);
+    const updateTimer = () => {
+        const distance = promoEndDate.getTime() - new Date().getTime();
+        if (distance <= 0) {
+            timerElement.innerHTML = "PROMOÇÃO ENCERRADA";
+            if (window.michelleCountdown) clearInterval(window.michelleCountdown);
+            return;
+        }
+        const d=Math.floor(distance/(1000*60*60*24)),h=Math.floor((distance%(1000*60*60*24))/(1000*60*60)),m=Math.floor((distance%(1000*60*60))/(1000*60)),s=Math.floor((distance%(1000*60))/1000);
+        timerElement.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+    };
+    if (window.michelleCountdown) clearInterval(window.michelleCountdown);
+    window.michelleCountdown = setInterval(updateTimer, 1000);
+    updateTimer();
+}
+function updateNewSortButtonVisibility(products) {
+    const newSortButton = document.getElementById('sort-new-btn');
+    if (!newSortButton) return;
+    const hasNewProducts = products.some(p => p.isNew);
+    newSortButton.style.display = hasNewProducts ? 'inline-block' : 'none';
+    if (!hasNewProducts && currentSort === 'new') {
+        document.querySelector('.sort-btn[data-sort="discount"]').click();
+    }
+}
+function searchProducts() {
+    const searchInput = document.getElementById('searchInput');
+    const searchResultsContainer = document.getElementById('searchResults');
+    const searchTerm = searchInput.value.toLowerCase();
+    searchResultsContainer.innerHTML = '';
+    if (searchTerm.length < 2) { searchResultsContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">Digite ao menos 2 caracteres.</p>'; return; }
+    const results = allProducts.filter(p => String(p.name || '').toLowerCase().includes(searchTerm) || String(p.code || '').toLowerCase().includes(searchTerm));
+    if (results.length === 0) {
+        searchResultsContainer.innerHTML = '<p class="text-gray-500 p-4 text-center">Nenhum produto encontrado.</p>';
+    } else {
+        results.forEach(product => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'p-2 border-b hover:bg-gray-100 cursor-pointer flex items-center gap-4';
+            resultItem.innerHTML = `<img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-contain border rounded-md"><div><p class="font-semibold">${product.name}</p><p class="text-sm text-gray-600">${formatPrice(product.price)}</p></div>`;
+            resultItem.addEventListener('click', () => {
+                showProductDetails(product.id);
+                document.getElementById('searchModal').classList.remove('active');
+            });
+            searchResultsContainer.appendChild(resultItem);
+        });
+    }
+}
+function checkForDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    if (productId) {
+        setTimeout(() => {
+            if (allProducts.find(p => p.id === parseInt(productId))) {
+                showProductDetails(parseInt(productId));
+            }
+        }, 500);
+    }
+}
+
+// ===================================================================
+// LÓGICA DE RENDERIZAÇÃO
+// ===================================================================
+function renderProducts(productsToRender, targetElement, cardClass = '') {
+    if (!targetElement) return;
+    targetElement.innerHTML = '';
+
+    const trueValues = ['true', 'verdadeiro', 'x', 'sim', 's'];
+    const propagandasAtivas = propagandaData.filter(p => trueValues.includes(String(p.ativo).toLowerCase()));
+    const shuffledAds = propagandasAtivas.sort(() => Math.random() - 0.5);
+    const adInterval = parseInt(siteConfig.IntervaloPropaganda) || 8;
+    let adIndex = 0;
+
+    productsToRender.forEach((product, index) => {
+        if (adIndex < shuffledAds.length && (index + 1) % adInterval === 0) {
+            const adToShow = shuffledAds[adIndex];
+            const propagandaCardHTML = `
+                <div class="propaganda-card">
+                    <h3>${adToShow.titulo}</h3>
+                    <a href="${adToShow.link_botao}" 
+                        data-category-link="${adToShow.categoria_alvo || ''}" 
+                        class="cta-button">
+                        ${adToShow.texto_botao}
+                    </a>
+                </div>
+            `;
+            const adCardWrapper = document.createElement('div');
+            adCardWrapper.className = 'h-full'; 
+            adCardWrapper.innerHTML = propagandaCardHTML;
+            targetElement.appendChild(adCardWrapper);
+            adIndex++;
+        }
+        const discount = calculateDiscount(product.oldPrice, product.price);
+        const card = document.createElement("div");
+        card.className = `product-card bg-white rounded-lg overflow-hidden shadow-md relative ${cardClass}`;
+        card.innerHTML = `
+            <div class="relative">
+                ${product.isOutOfStock ? `<div class="soldout-badge">ESGOTADO</div>` : ''}
+                ${product.isNew ? `<div class="new-badge">Lançamento</div>` : ''}
+                ${discount > 0 ? `<span class="price-tag">${discount}% OFF</span>` : ''}
+                <img src="${product.image}" alt="${product.name}" class="product-image w-full" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=Imagem+indisponível'">
+            </div>
+            <div class="p-4 flex flex-col flex-grow product-card-content">
+                <h3 class="text-lg font-semibold text-gray-800 mb-1 line-clamp-2 h-14">${product.name}</h3>
+                <div class="mt-auto mb-4 flex justify-between items-center gap-4">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1 font-semibold">${product.brand || ''}</p>
+                        <p class="text-sm text-gray-500 mb-3">Cód. ${product.code}</p>
+                        <div class="flex flex-col">
+                                ${product.oldPrice > product.price ? `<span class="old-price text-sm">${formatPrice(product.oldPrice)}</span>` : ''}
+                                <span class="new-price">${formatPrice(product.price)}</span>
+                        </div>
+                    </div>
+                    ${product.infoAdicional ? `<div class="info-adicional">${product.infoAdicional}</div>` : ''}
+                </div>
+                <div class="flex gap-2">
+                    <button class="view-details w-1/2 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" data-id="${product.id}">Detalhes</button>
+                    <button class="add-to-budget w-1/2 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" data-id="${product.id}">Orçamento +</button>
+                </div>
+            </div>`;
+        
+        targetElement.appendChild(card);
+    });
+    
+    addBudgetButtonListeners(targetElement); // Listener para o botão de orçamento
+    addAdCardListeners(); // Listener para os cards de propaganda
+}
+function renderCategories(categories) {
+    const categoryContainer = document.getElementById("categoryButtonsContainer");
+    if (!categoryContainer) return;
+    categoryContainer.innerHTML = '';
+    const allButton = document.createElement('button');
+    allButton.className = 'category-btn active';
+    allButton.dataset.category = 'all';
+    allButton.textContent = 'Todas';
+    categoryContainer.appendChild(allButton);
+    categories.forEach(cat => {
+        const button = document.createElement('button');
+        button.className = 'category-btn';
+        button.dataset.category = cat.categoria;
+        button.textContent = cat.nome_exibicao;
+        categoryContainer.appendChild(button);
+    });
+    addCategoryButtonListeners();
+}
+function showProductDetails(productId) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+    
+    const modal = document.getElementById("productModal");
+    const modalContent = document.getElementById("modalContent");
+
+    // Novo layout de coluna única
+    modalContent.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" class="w-full h-auto object-contain rounded-lg mb-4 max-h-80 mx-auto">
+        
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">${product.name}</h3>
+        
+        <div class="grid grid-cols-2 gap-x-4 mb-4 text-sm">
+            <p class="text-gray-500"><b>Marca:</b> ${product.brand || ''}</p>
+            <p class="text-gray-500"><b>Código:</b> ${product.code}</p>
+        </div>
+        
+        <div class="flex flex-col items-start mb-4">
+            ${product.oldPrice > product.price ? `<span class="old-price text-lg">${formatPrice(product.oldPrice)}</span>` : ''}
+            <span class="new-price text-3xl font-bold text-green-600">${formatPrice(product.price)}</span>
+            ${calculateDiscount(product.oldPrice, product.price) > 0 ? `<p class="text-red-600 font-semibold text-md mt-1">${calculateDiscount(product.oldPrice, product.price)}% de desconto!</p>` : ''}
+        </div>
+        
+        <div id="modalInfoAdicional" class="info-adicional my-4" style="display: none;"></div>
+
+        <div class="bg-gray-50 p-4 rounded-lg mb-6 border">
+            <h4 class="font-semibold mb-2 text-gray-800">Descrição:</h4>
+            <p class="text-gray-700 whitespace-pre-line">${product.description || 'Sem descrição.'}</p>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-3 mt-auto">
+            <a href="https://wa.me/47996970021?text=Olá!%20Tenho%20interesse%20no%20produto%20${encodeURIComponent(product.name)}%20(Cód:%20${product.code})" target="_blank" class="flex-1 py-3 px-4 whatsapp-btn text-center rounded-lg font-semibold transition flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp"></i> Falar com Vendedor
+            </a>
+            <button id="modalShare" class="flex-1 py-3 px-4 bg-gray-500 text-white text-center rounded-lg hover:bg-gray-600 font-semibold transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-share-alt"></i> Compartilhar Link
+            </button>
+        </div>
+    `;
+
+    // Ativa o botão de compartilhamento
+    const modalShareButton = modalContent.querySelector('#modalShare');
+    if (modalShareButton) {
+        modalShareButton.onclick = () => shareProduct(product.id);
+    }
+
+    // Mostra a informação adicional se existir
+    const modalInfoAdicional = modalContent.querySelector('#modalInfoAdicional');
+    if (product.infoAdicional) {
+        modalInfoAdicional.textContent = product.infoAdicional;
+        modalInfoAdicional.style.display = 'block';
+    }
+
+    // Exibe o modal
+    modal.classList.add('active');
+}
+
+// ===================================================================
+// LÓGICA DE FILTRAGEM E ORDENAÇÃO
+// ===================================================================
+function filterAndSortProducts() {
+    let filteredProducts = [...allProducts];
+    const productsContainer = document.getElementById("productsContainer");
+    if (currentCategory !== "all") {
+        filteredProducts = filteredProducts.filter(p => p.category === currentCategory);
+    }
+    updateNewSortButtonVisibility(filteredProducts);
+    switch(currentSort) {
+        case 'discount': filteredProducts.sort((a, b) => calculateDiscount(b.oldPrice, b.price) - calculateDiscount(a.oldPrice, a.price)); break;
+        case 'price-asc': filteredProducts.sort((a, b) => a.price - b.price); break;
+        case 'price-desc': filteredProducts.sort((a, b) => b.price - a.price); break;
+        case 'new': filteredProducts.sort((a, b) => { if (b.isNew && !a.isNew) return 1; if (a.isNew && !b.isNew) return -1; return calculateDiscount(b.oldPrice, b.price) - calculateDiscount(a.oldPrice, a.price); }); break;
+    }
+    renderProducts(filteredProducts, productsContainer);
+}
+
+// ===================================================================
+// INICIALIZAÇÃO E EVENT LISTENERS
+// ===================================================================
+async function initializePage() {
+    updateBudgetCounter();
+    const loadingProducts = document.getElementById("loadingProducts");
+    const productsContainer = document.getElementById("productsContainer");
+    loadingProducts.style.display = "block";
+    productsContainer.style.display = "none";
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`A API falhou: ${response.status}`);
+        const data = await response.json();
+        
+        siteConfig = data.config || {};
+        propagandaData = data.propaganda || [];
+
+        if (siteConfig) {
+            const validityTextElement = document.getElementById('promo-validity-text');
+            if (validityTextElement && siteConfig.data_inicio && siteConfig.data_fim) {
+                validityTextElement.textContent = `Promoção válida de ${formatDate(siteConfig.data_inicio)} até ${formatDate(siteConfig.data_fim)}`;
+            }
+            const countdownTimerElement = document.getElementById("countdown-timer");
+            if (countdownTimerElement && siteConfig.data_fim) {
+                startCountdown(siteConfig.data_fim, countdownTimerElement);
+            }
+        }
+
+        allProducts = data.products.map(p => {
+            const trueValues = ['true', 'verdadeiro', 'x', 'sim', 's'];
+            return {
+                ...p,
+                price: parseFloat(p.price) || 0,
+                oldPrice: parseFloat(p.oldPrice) || 0,
+                isOutOfStock: p.isOutOfStock === true || trueValues.includes(String(p.isOutOfStock).toLowerCase()),
+                isNew: p.isNew === true || trueValues.includes(String(p.isNew).toLowerCase()),
+                isDestaque: p.isDestaque === true || trueValues.includes(String(p.isDestaque).toLowerCase()),
+                infoAdicional: p.infoAdicional || ''
+            };
+        });
+        sessionStorage.setItem('allProducts', JSON.stringify(allProducts));
+
+        const destaquesContainer = document.getElementById('destaques-container');
+        const produtosDestaque = allProducts.filter(p => p.isDestaque);
+        if (destaquesContainer && produtosDestaque.length > 0) {
+            renderProducts(produtosDestaque, destaquesContainer, 'destaque-card');
+        } else if (destaquesContainer) {
+            document.getElementById('secao-destaques').style.display = 'none';
+        }
+        
+        const allPossibleCategories = data.categorias;
+        const activeProductCategories = new Set(allProducts.map(p => p.category));
+        const filteredCategories = allPossibleCategories.filter(cat => activeProductCategories.has(cat.categoria));
+        
+        renderCategories(filteredCategories);
+        addEventListeners();
+        filterAndSortProducts();
+        checkForDeepLink();
+    } catch (error) {
+        console.error("Erro ao inicializar:", error);
+        productsContainer.innerHTML = `<div class='col-span-full text-center py-12 text-red-500'>${error.message}. Verifique a API e o Console (F12).</div>`;
+    } finally {
+        loadingProducts.style.display = "none";
+        productsContainer.style.display = "grid";
+    }
+}
+
+function addEventListeners() {
+    // PARTE 1: Lógica dos botões de Ordenação (já existe no seu código)
+    const sortButtons = document.querySelectorAll(".sort-btn");
+    sortButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            sortButtons.forEach(btn => {
+                btn.classList.remove("bg-blue-600", "text-white");
+                btn.classList.add("bg-gray-200");
+            });
+            e.currentTarget.classList.add("bg-blue-600", "text-white");
+            e.currentTarget.classList.remove("bg-gray-200");
+            currentSort = e.currentTarget.dataset.sort;
+            filterAndSortProducts();
+        });
+    });
+    
+    // PARTE 2: Lógica para Fechar o Modal (CORRIGIDA)
+    const modal = document.getElementById("productModal");
+    const closeModal = document.querySelector(".close-modal");
+    closeModal.addEventListener("click", () => modal.classList.remove('active'));
+    window.addEventListener("click", e => { if (e.target === modal) modal.classList.remove('active'); });
+
+    // PARTE 3: Lógica da Busca (já existe no seu código)
+    const searchButton = document.getElementById('searchButton');
+    const searchModal = document.getElementById('searchModal');
+    const searchInput = document.getElementById('searchInput');
+    searchButton.addEventListener('click', () => {
+        searchModal.classList.add('active');
+        searchInput.value = '';
+        document.getElementById('searchResults').innerHTML = '';
+        searchInput.focus();
+    });
+    searchModal.addEventListener('click', (e) => { if (e.target === searchModal) { searchModal.classList.remove('active'); } });
+    searchInput.addEventListener('input', searchProducts);
+
+    // PARTE 4: OUVINTE MESTRE PARA O BOTÃO "DETALHES" (NOVO)
+    const productsContainer = document.getElementById('productsContainer');
+    const destaquesContainer = document.getElementById('destaques-container');
+
+    // Esta é a função que vai "ouvir" os cliques
+    function handleCardClick(event) {
+        // Ela verifica se o elemento clicado é ou está dentro de um botão ".view-details"
+        const detailsButton = event.target.closest('.view-details');
+        if (detailsButton) {
+            event.preventDefault(); // Boa prática
+            const productId = detailsButton.dataset.id;
+            if (productId) {
+                showProductDetails(parseInt(productId)); // Se for, ela chama a função para mostrar os detalhes
+            }
+        }
+    }
+
+    // Ativamos o "ouvinte mestre" nos painéis de produtos
+    if (productsContainer) productsContainer.addEventListener('click', handleCardClick);
+    if (destaquesContainer) destaquesContainer.addEventListener('click', handleCardClick);
+}
+// ===================================================================
+// FUNÇÃO PARA COMPARTILHAR O LINK DO PRODUTO
+// ===================================================================
+function shareProduct(productId) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+
+    // Gera o link direto para este produto no site da Michelle
+    const url = `https://ofertasmichelle.com.br?id=${productId}`;
+    const shareData = {
+        title: product.name,
+        text: `Confira esta oferta na Michelle Acabamentos: ${product.name}!`,
+        url: url,
+    };
+
+    // Usa a API de compartilhamento nativa do navegador/celular
+    if (navigator.share) {
+        navigator.share(shareData).catch((error) => console.log('Erro ao compartilhar:', error));
+    } else {
+        // Se não for possível (em computadores), copia o link para a área de transferência
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Link da oferta copiado para a área de transferência!');
+        });
+    }
+}
+function addCategoryButtonListeners() {
+    document.querySelectorAll("#categoryButtonsContainer .category-btn").forEach(button => {
+        button.addEventListener("click", (e) => {
+            document.querySelectorAll("#categoryButtonsContainer .category-btn").forEach(btn => btn.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            currentCategory = e.currentTarget.dataset.category;
+            filterAndSortProducts();
+        });
+    });
+}
+function addBudgetButtonListeners(container) {
+   container.querySelectorAll('.add-to-budget').forEach(button => {
+       button.addEventListener('click', e => {
+            e.stopPropagation();
+            addToBudget(parseInt(e.currentTarget.dataset.id));
+       });
+   });
+}
+// Inicia tudo!
+initializePage();
+</script>
+
+<footer class="w-full text-center py-4 bg-gray-50 border-t border-gray-200 mt-10">
+  <span class="text-gray-700 text-sm">
+    Quer um catálogo digital igual para sua loja? 
+    <a 
+      href="https://wa.me/5547984876962?text=Tenho%20interesse%20em%20ter%20um%20Cat%C3%A1logo%20Digital" 
+      target="_blank" 
+      rel="noopener" 
+      class="text-green-600 hover:underline font-bold inline-flex items-center gap-1"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block" width="16" height="16" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M20.52 3.48A11.88 11.88 0 0 0 12 0C5.372 0 0 5.373 0 12c0 2.12.553 4.166 1.6 5.973L.068 23.258A1.5 1.5 0 0 0 1.74 25.93l5.284-1.535A11.977 11.977 0 0 0 12 24c6.628 0 12-5.373 12-12 0-3.185-1.233-6.179-3.48-8.52ZM12 22a9.956 9.956 0 0 1-5.107-1.415l-.36-.213-4.225 1.228 1.217-4.208-.217-.362A10.02 10.02 0 0 1 2 12c0-5.514 4.486-10 10-10 2.662 0 5.175 1.037 7.063 2.925A9.938 9.938 0 0 1 22 12c0 5.514-4.486 10-10 10Zm5.11-7.407c-.087-.146-.317-.232-.666-.406-.349-.174-2.066-1.02-2.386-1.137-.32-.116-.553-.175-.786.174-.232.349-.902 1.138-1.107 1.375-.204.233-.408.262-.757.087-.348-.174-1.471-.543-2.804-1.73-1.036-.925-1.736-2.067-1.939-2.417-.203-.35-.021-.539.153-.713.157-.156.349-.406.524-.61.174-.203.232-.349.349-.582.116-.233.058-.437-.029-.61-.087-.174-.786-1.9-1.077-2.604-.283-.679-.573-.587-.786-.597-.203-.009-.437-.012-.67-.012-.232 0-.611.087-.93.437C2.035 6.675 2.06 8.738 2.06 12c0 4.425 3.594 8.063 7.93 8.063 2.137 0 4.29-.715 5.824-2.011.524-.436.998-1.023 1.34-1.656.143-.254.093-.42.06-.493Z"/></svg>
+      Fale comigo no WhatsApp
+    </a>
+  </span>
+</footer>
+<script>
+
+  function generateProductJSONLD(product) {
+    const productJSON = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": product.name,
+      "image": [product.image],
+      "description": product.description || "Produto disponível na loja Michelle Acabamentos.",
+      "sku": product.code,
+      "brand": {
+        "@type": "Brand",
+        "name": "Michelle Acabamentos"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": `https://ofertasmichelle.com.br?id=${product.id}`,
+        "priceCurrency": "BRL",
+        "price": parseFloat(product.price).toFixed(2),
+        "availability": (product.isOutOfStock)
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock"
+      }
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(productJSON, null, 2);
+    document.head.appendChild(script);
+  }
+
+  function generateAllProductJSONLD() {
+    if (!allProducts || allProducts.length === 0) return;
+    const max = Math.min(allProducts.length, 10); // limita a 10 produtos
+    for (let i = 0; i < max; i++) {
+      generateProductJSONLD(allProducts[i]);
+    }
+  }
+
+  // Aguarda o carregamento dos produtos e gera o JSON-LD
+  setTimeout(generateAllProductJSONLD, 3000);
+</script>
+
+  </body>
+</html>
