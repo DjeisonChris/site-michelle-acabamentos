@@ -5,12 +5,14 @@ from PIL import Image
 import os
 import json
 import random
+# --- NOVA BIBLIOTECA PARA EXECUÇÃO PARALELA ---
+import concurrent.futures
 
 # --- CONSTANTES GLOBAIS PARA MICHELLE ACABAMENTOS ---
 FONT_PATH = "DejaVuSans.ttf"
 URL_PRODUTOS = "https://script.google.com/macros/s/AKfycbyOLlP99avxI7kIRXBTgKx_oDt1PMBa2MpOyCZVv5H54AB4KCXYGeUk4YlwjW_oj3J2rg/exec"
 URL_LOGO = "https://i.ibb.co/0HmBNqd/Logo-6.png"
-URL_BANNER_MICHELLE = "https://ofertasmichelle.com.br/banner/banner.jpg"  # <-- URL ADICIONADA
+URL_BANNER_MICHELLE = "https://ofertasmichelle.com.br/banner/banner.jpg"
 URL_WHATSAPP = "https://wa.me/47996970021"
 URL_SITE = "https://ofertasmichelle.com.br"
 
@@ -30,7 +32,50 @@ def formatar_data_br(data_iso):
     except:
         return str(data_iso)
 
+# --- NOVA FUNÇÃO PARA BAIXAR UMA ÚNICA IMAGEM (PARA O PROCESSO PARALELO) ---
+def download_image(produto):
+    try:
+        img_url = produto.get('image')
+        produto_id = produto.get('id')
+        if not img_url or not produto_id:
+            return None, "URL da imagem ou ID do produto ausente."
+        
+        img_path = os.path.join('imagens_temp', f"{produto_id}.jpg")
+        
+        # Se a imagem já foi baixada, não baixa de novo
+        if os.path.exists(img_path):
+            return img_path, None
+
+        img_response = requests.get(img_url, timeout=15)
+        img_response.raise_for_status()
+        
+        with open(img_path, 'wb') as f:
+            f.write(img_response.content)
+        return img_path, None
+    except Exception as e:
+        return None, f"Falha ao baixar {img_url}: {e}"
+
+# --- NOVA FUNÇÃO QUE ORQUESTRA OS DOWNLOADS EM PARALELO ---
+def download_images_parallel(produtos):
+    print("Iniciando download das imagens em paralelo...")
+    # Usa até 10 "trabalhadores" para baixar imagens simultaneamente
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        # Cria um "trabalho" de download para cada produto
+        future_to_product = {executor.submit(download_image, p): p for p in produtos}
+        
+        for future in concurrent.futures.as_completed(future_to_product):
+            produto = future_to_product[future]
+            try:
+                path, error = future.result()
+                if error:
+                    print(f"  - Erro no produto '{produto.get('name')}': {error}")
+            except Exception as e:
+                print(f"  - Exceção séria no download para o produto '{produto.get('name')}': {e}")
+    print("Download das imagens concluído.")
+
+
 class PDF(FPDF):
+    # (A classe PDF continua a mesma)
     def header(self):
         if self.page_no() <= 2: return
         self.image(URL_LOGO, 10, 8, 33, link=URL_SITE)
@@ -49,8 +94,7 @@ class PDF(FPDF):
         self.set_font('DejaVu', 'I', 8)
         self.cell(0, 10, f'Página {self.page_no()}', align='C')
 
-# ... (O resto do código que não foi alterado continua aqui) ...
-
+# --- FUNÇÃO RENDERIZAR PRODUTO ATUALIZADA (NÃO FAZ MAIS DOWNLOAD) ---
 def renderizar_produto(pdf, produto):
     try:
         true_values = ['true', 'verdadeiro', 'x', 'sim', 's']
@@ -60,10 +104,13 @@ def renderizar_produto(pdf, produto):
 
         pdf.add_page()
         
-        img_response = requests.get(produto['image'])
+        # Apenas pega o caminho da imagem que já foi baixada
         img_path = os.path.join('imagens_temp', f"{produto['id']}.jpg")
-        with open(img_path, 'wb') as f: f.write(img_response.content)
+        if not os.path.exists(img_path):
+             print(f"Aviso: Imagem para o produto '{produto['name']}' não encontrada. Pulando.")
+             return
 
+        # O resto da função continua igual...
         compressed_img_path = os.path.join('imagens_temp', f"compressed_{produto['id']}.jpg")
         with Image.open(img_path) as img:
             if img.mode == 'RGBA' or img.mode == 'LA' or (img.mode == 'P' and 'transparency' in img.info):
@@ -127,29 +174,26 @@ def renderizar_produto(pdf, produto):
         pdf.line(10, pdf.get_y(), pdf.w - 10, pdf.get_y())
 
     except Exception as e:
-        print(f"  - Erro ao processar o produto {produto.get('id', '')} ({produto.get('name', '')}): {e}")
+        print(f"  - Erro ao renderizar o produto {produto.get('id', '')} ({produto.get('name', '')}): {e}")
 
-# --- FUNÇÃO DA PÁGINA DE CAPA ATUALIZADA ---
+# ... (As outras funções, como criar_pagina_de_capa, etc., continuam as mesmas) ...
 def criar_pagina_de_capa(pdf, config):
     print("Criando a página de capa...")
     pdf.add_page()
     pdf.image(URL_LOGO, x=pdf.w / 2 - 35, y=15, w=70, link=URL_SITE)
 
-    # --- INÍCIO DA MODIFICAÇÃO: Bloco para baixar e inserir o banner ---
     try:
         print("Baixando banner do site...")
         caminho_banner_temp = os.path.join('imagens_temp', 'banner_michelle.jpg')
         response = requests.get(URL_BANNER_MICHELLE)
-        response.raise_for_status() # Lança um erro se o download falhar
+        response.raise_for_status() 
         with open(caminho_banner_temp, 'wb') as f:
             f.write(response.content)
-        # Posiciona o banner abaixo do logo. x=10 e w=128.5 são para A5 com margem de 10mm
         pdf.image(caminho_banner_temp, x=10, y=65, w=128.5)
-        pdf.set_y(130) # Pula o cursor para depois do banner
+        pdf.set_y(130) 
     except Exception as e:
         print(f"Aviso: Não foi possível baixar o banner do site. O PDF será gerado sem ele. Erro: {e}")
-        pdf.set_y(110) # Se não houver banner, posiciona o cursor mais acima
-    # --- FIM DA MODIFICAÇÃO ---
+        pdf.set_y(110)
     
     pdf.set_font('DejaVu', 'B', 12)
     
@@ -175,7 +219,6 @@ def criar_pagina_de_capa(pdf, config):
     pdf.cell(0, 7, "Acesse nosso site de ofertas online", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C', link=URL_SITE)
     pdf.set_text_color(0, 0, 0)
 
-# ... (O resto do código que não foi alterado continua aqui, como criar_pagina_indice, etc.) ...
 def criar_pagina_indice(pdf, categorias, links_map, link_destaques, tem_destaques):
     print("Desenhando o índice na página reservada...")
     pdf.set_font('DejaVu', 'B', 24)
@@ -184,12 +227,12 @@ def criar_pagina_indice(pdf, categorias, links_map, link_destaques, tem_destaque
 
     if tem_destaques:
         pdf.set_font('DejaVu', 'B', 14)
-        pdf.set_text_color(255, 58, 58) # Vermelho destaque
+        pdf.set_text_color(255, 58, 58) 
         pdf.cell(0, 10, "★ Ofertas Imperdíveis ★", new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C', link=link_destaques)
         pdf.ln(5)
 
     pdf.set_font('DejaVu', '', 12)
-    pdf.set_text_color(0, 102, 204) # Azul para categorias
+    pdf.set_text_color(0, 102, 204) 
     for cat_nome in categorias:
         pdf.cell(0, 10, cat_nome, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align='C', link=links_map[cat_nome])
     
@@ -235,8 +278,9 @@ def criar_pagina_propaganda(pdf, propaganda_item):
     pdf.set_xy(button_x, button_y)
     pdf.cell(button_w, button_h, propaganda_item.get('texto_botao', 'Ver Ofertas'), align='C', link=propaganda_item.get('link_botao', URL_SITE))
     
-    pdf.set_text_color(0, 0, 0) 
+    pdf.set_text_color(0, 0, 0)
 
+# --- FUNÇÃO PRINCIPAL ATUALIZADA PARA USAR O DOWNLOAD PARALELO ---
 def gerar_catalogo_pdf():
     if not os.path.exists(FONT_PATH):
         print(f"ERRO: Fonte '{FONT_PATH}' não encontrada.")
@@ -264,6 +308,12 @@ def gerar_catalogo_pdf():
         print("ERRO CRÍTICO: A resposta da API não é um JSON válido.")
         return
 
+    if not os.path.exists('imagens_temp'):
+        os.makedirs('imagens_temp')
+
+    # --- ETAPA DE OTIMIZAÇÃO: BAIXA TODAS AS IMAGENS PRIMEIRO ---
+    download_images_parallel(produtos)
+
     mapa_categorias = {cat['categoria']: cat['nome_exibicao'] for cat in categorias_info}
     
     categorias_ativas = sorted(
@@ -284,7 +334,6 @@ def gerar_catalogo_pdf():
     pdf.add_font('DejaVu', 'B', FONT_PATH)
     pdf.add_font('DejaVu', 'I', FONT_PATH)
     pdf.set_auto_page_break(auto=True, margin=15)
-    if not os.path.exists('imagens_temp'): os.makedirs('imagens_temp')
     
     link_destaques = pdf.add_link()
     links_map = {cat_nome: pdf.add_link() for cat_nome in categorias_ativas}
