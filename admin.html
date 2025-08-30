@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Michelle Acabamentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+
+    <div id="password-protection" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-md text-center w-full max-w-sm">
+            <img src="https://i.ibb.co/0HmBNqd/Logo-6.png" alt="Logo Michelle" class="h-16 mx-auto mb-4">
+            <h1 class="text-2xl font-bold mb-4">Acesso Restrito</h1>
+            <p class="mb-4 text-gray-600">Por favor, insira a senha para acessar o painel de controle.</p>
+            <input type="password" id="password-input" class="border rounded-md px-4 py-2 w-full mb-4">
+            <button id="password-submit" class="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 w-full">Entrar</button>
+        </div>
+    </div>
+
+    <main id="admin-panel" class="container mx-auto p-4 md:p-8 hidden">
+        <h1 class="text-4xl font-bold mb-8">Painel de Gerenciamento de Produtos</h1>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Produtos Cadastrados</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="p-2">ID</th>
+                            <th class="p-2">Nome</th>
+                            <th class="p-2">Preço</th>
+                            <th class="p-2">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 id="form-title" class="text-2xl font-semibold mb-4">Adicionar Novo Produto</h2>
+            <form id="product-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <input type="hidden" id="id">
+                <div class="lg:col-span-2"><label for="name" class="block mb-1 font-medium">Nome do Produto</label><input required type="text" id="name" class="w-full border rounded-md p-2"></div>
+                <div><label for="price" class="block mb-1 font-medium">Preço (ex: 29.90)</label><input required type="number" step="0.01" id="price" class="w-full border rounded-md p-2"></div>
+                <div><label for="oldPrice" class="block mb-1 font-medium">Preço Antigo (Opcional)</label><input type="number" step="0.01" id="oldPrice" class="w-full border rounded-md p-2"></div>
+                <div><label for="code" class="block mb-1 font-medium">Código</label><input required type="text" id="code" class="w-full border rounded-md p-2"></div>
+                <div><label for="brand" class="block mb-1 font-medium">Marca</label><input type="text" id="brand" class="w-full border rounded-md p-2"></div>
+                <div class="lg:col-span-3"><label for="image" class="block mb-1 font-medium">URL da Imagem</label><input required type="text" id="image" class="w-full border rounded-md p-2"></div>
+                <div class="lg:col-span-3"><label for="description" class="block mb-1 font-medium">Descrição</label><textarea id="description" rows="3" class="w-full border rounded-md p-2"></textarea></div>
+                <div><label for="category" class="block mb-1 font-medium">Categoria</label><input required type="text" id="category" class="w-full border rounded-md p-2"></div>
+                <div><label for="isDestaque" class="block mb-1 font-medium">É Destaque? (x/sim/true)</label><input type="text" id="isDestaque" class="w-full border rounded-md p-2"></div>
+                <div><label for="isNew" class="block mb-1 font-medium">É Lançamento? (x/sim/true)</label><input type="text" id="isNew" class="w-full border rounded-md p-2"></div>
+                <div><label for="isOutOfStock" class="block mb-1 font-medium">Esgotado? (x/sim/true)</label><input type="text" id="isOutOfStock" class="w-full border rounded-md p-2"></div>
+                <div class="lg:col-span-2"><label for="infoAdicional" class="block mb-1 font-medium">Info Adicional (ex: 3x sem juros)</label><input type="text" id="infoAdicional" class="w-full border rounded-md p-2"></div>
+
+                <div class="lg:col-span-3 mt-4">
+                    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">Salvar Produto</button>
+                    <button type="button" id="cancel-edit" class="bg-gray-400 text-white px-6 py-2 rounded-md hover:bg-gray-500 hidden ml-2">Cancelar Edição</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+<script>
+    // --- LÓGICA DE PROTEÇÃO POR SENHA ---
+    const correctPassword = "#@!Djju190699"; // MUDE SUA SENHA AQUI!
+    const passwordProtection = document.getElementById('password-protection');
+    const adminPanel = document.getElementById('admin-panel');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+
+    passwordSubmit.addEventListener('click', checkPassword);
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkPassword();
+    });
+
+    function checkPassword() {
+        if (passwordInput.value === correctPassword) {
+            passwordProtection.classList.add('hidden');
+            adminPanel.classList.remove('hidden');
+            loadProducts();
+        } else {
+            alert('Senha incorreta!');
+            passwordInput.value = '';
+        }
+    }
+
+    // --- LÓGICA DO PAINEL DE CONTROLE ---
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbyOLlP99avxI7kIRXBTgKx_oDt1PMBa2MpOyCZVv5H54AB4KCXYGeUk4YlwjW_oj3J2rg/exec';
+    const form = document.getElementById('product-form');
+    const formTitle = document.getElementById('form-title');
+    const tableBody = document.getElementById('products-table-body');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+
+    async function sendRequest(body) {
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(body),
+                redirect: 'follow'
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            return { status: 'error', message: 'Erro de comunicação com a API.' };
+        }
+    }
+
+    async function loadProducts() {
+        tableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">Carregando produtos...</td></tr>';
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            tableBody.innerHTML = '';
+            data.products.sort((a,b) => a.id - b.id).forEach(p => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="p-2 font-mono">${p.id}</td>
+                    <td class="p-2">${p.name}</td>
+                    <td class="p-2">${(parseFloat(p.price) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td class="p-2">
+                        <button class="text-blue-500 hover:underline mr-2" onclick="editProduct(${p.id})">Editar</button>
+                        <button class="text-red-500 hover:underline" onclick="deleteProduct(${p.id})">Apagar</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            tableBody.innerHTML = `<tr><td colspan="4" class="p-2 text-center text-red-500">Erro ao carregar produtos.</td></tr>`;
+        }
+    }
+    
+    async function editProduct(id) {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const product = data.products.find(p => p.id == id);
+        if (!product) return alert('Produto não encontrado!');
+        
+        formTitle.textContent = `Editando Produto (ID: ${id})`;
+        cancelEditBtn.classList.remove('hidden');
+        
+        for (const key in product) {
+            if (document.getElementById(key)) {
+                document.getElementById(key).value = product[key];
+            }
+        }
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetForm() {
+        form.reset();
+        document.getElementById('id').value = '';
+        formTitle.textContent = 'Adicionar Novo Produto';
+        cancelEditBtn.classList.add('hidden');
+    }
+    cancelEditBtn.addEventListener('click', resetForm);
+
+    async function deleteProduct(id) {
+        if (!confirm(`Tem certeza que deseja apagar o produto com ID ${id}? Esta ação não pode ser desfeita.`)) return;
+        
+        const result = await sendRequest({ action: 'deleteProduct', productId: id });
+        alert(result.message);
+        loadProducts();
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const productData = {};
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            if (input.id) productData[input.id] = input.value;
+        });
+
+        const action = productData.id ? 'updateProduct' : 'addProduct';
+        
+        const result = await sendRequest({ action: action, product: productData });
+        alert(result.message);
+        if (result.status === 'success') {
+            resetForm();
+            loadProducts();
+        }
+    });
+
+</script>
+</body>
+</html>
