@@ -97,20 +97,20 @@
     const cancelEditBtn = document.getElementById('cancel-edit');
 
     async function sendRequest(body) {
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(body),
-                redirect: 'follow'
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Erro na requisição:', error);
-            return { status: 'error', message: 'Erro de comunicação com a API.' };
-        }
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            // Removendo o FormData e voltando para o envio direto, que é mais simples
+            // A nova API agora entende este formato
+            body: JSON.stringify(body),
+            redirect: 'follow'
+        });
+        return await response.json();
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        return { status: 'error', message: 'Erro de comunicação com a API.' };
     }
-
+}
     async function loadProducts() {
         tableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">Carregando produtos...</td></tr>';
         try {
