@@ -533,8 +533,7 @@ async function initializePage() {
                 isOutOfStock: p.isOutOfStock === true || trueValues.includes(String(p.isOutOfStock).toLowerCase()),
                 isNew: p.isNew === true || trueValues.includes(String(p.isNew).toLowerCase()),
                 isDestaque: p.isDestaque === true || trueValues.includes(String(p.isDestaque).toLowerCase()),
-                infoAdicional: p.infoAdicional || '',
-                status: p.status || 'ativo' // Garante um status padrão
+                infoAdicional: p.infoAdicional || ''
             };
         });
         sessionStorage.setItem('allProducts', JSON.stringify(allProducts));
