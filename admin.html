@@ -97,19 +97,30 @@
     const cancelEditBtn = document.getElementById('cancel-edit');
 
     async function sendRequest(body) {
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            // Removendo o FormData e voltando para o envio direto, que é mais simples
-            // A nova API agora entende este formato
-            body: JSON.stringify(body),
-            redirect: 'follow'
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            document.body.removeChild(script);
+            resolve(data);
+        };
+
+        const script = document.createElement('script');
+        // Constrói a URL com os dados como parâmetros
+        const params = new URLSearchParams({
+            action: body.action,
+            product: JSON.stringify(body.product),
+            callback: callbackName
         });
-        return await response.json();
-    } catch (error) {
-        console.error('Erro na requisição:', error);
-        return { status: 'error', message: 'Erro de comunicação com a API.' };
-    }
+        
+        script.src = apiUrl + '?' + params.toString();
+        
+        script.onerror = () => {
+            reject({ status: 'error', message: 'Erro de comunicação com a API.' });
+        };
+
+        document.body.appendChild(script);
+    });
 }
     async function loadProducts() {
         tableBody.innerHTML = '<tr><td colspan="4" class="p-2 text-center">Carregando produtos...</td></tr>';
