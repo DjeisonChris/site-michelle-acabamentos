@@ -133,7 +133,7 @@
                     <td class="p-2">${(parseFloat(p.price) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                     <td class="p-2">
                         <button class="text-blue-500 hover:underline mr-2" onclick="editProduct(${p.id})">Editar</button>
-                        <button class="text-red-500 hover:underline" onclick="deleteProduct(${p.id})">Apagar</button>
+                        <button class="text-yellow-600 hover:underline" onclick="archiveProduct(${p.id})">Arquivar</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -168,13 +168,14 @@
     }
     cancelEditBtn.addEventListener('click', resetForm);
 
-    async function deleteProduct(id) {
-        if (!confirm(`Tem certeza que deseja apagar o produto com ID ${id}? Esta ação não pode ser desfeita.`)) return;
-        
-        const result = await sendRequest({ action: 'deleteProduct', productId: id });
-        alert(result.message);
+    async function archiveProduct(id) {
+        if (!confirm(`Tem certeza que deseja ARQUIVAR o produto com ID ${id}? Ele sairá do site, mas não será apagado.`)) return;
+
+        // A ação agora é 'archiveProduct'
+        const result = await sendRequest({ action: 'archiveProduct', productId: id });
+        alert(result.message || 'Erro, tente novamente.');
         if (result.status === 'success') {
-            loadProducts();
+            loadProducts(); // Recarrega a lista de produtos
         }
     }
 
