@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-5D748J95');</script>
+        <script>
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        'page_type': 'home' // Informa ao GTM que esta é a página principal
+      });
+        </script>
     <meta name="google-site-verification" content="LAUxnJ2FNQqmFEqnc8qfIg3-cyCpjRFeICrpkr_JzY4" />
     <link rel="icon" href="https://i.ibb.co/Vc0njpwR/Icone.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michelle Acabamentos - Ofertas em Pisos, Tintas, Porcelanatos e Mais</title>
+    <title>Michelle Materiais de Construção e Acabamentos - Ofertas em Pisos, Tintas, Porcelanatos e Mais</title>
     
     <script type="application/ld+json">
     { "@context": "https://schema.org", "@type": "Organization", "name": "Michelle Acabamentos", "url": "https://ofertasmichelle.com.br", "logo": "https://i.ibb.co/0HmBNqd/Logo-6.png", "sameAs": ["https://www.instagram.com/michelleacabamentos/", "https://wa.me/47996970021"], "contactPoint": { "@type": "ContactPoint", "telephone": "+5547996970021", "contactType": "Customer Service" } }
@@ -105,7 +116,8 @@
     </style>
 </head>
 <body>
-    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5D748J95"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="countdown" class="bg-red-500 text-white py-2 text-center font-bold">Promoção termina em: <span id="countdown-timer"></span></div>
     <div id="promo-validity-text" class="promotion-header text-center py-1"></div>
     
@@ -453,6 +465,18 @@ function renderProducts(productsToRender, targetElement, cardClass = '') {
         console.error("Produto não encontrado para o ID:", productId);
         return;
     }
+    window.dataLayer.push({
+      'event': 'view_item', // Nome padrão do Google para "visualização de item"
+      'ecommerce': {
+        'items': [{
+          'item_id': product.code,          // Código/SKU do produto
+          'item_name': product.name,        // Nome do produto
+          'price': product.price,           // Preço atual
+          'item_brand': product.brand,      // Marca
+          'item_category': product.category // Categoria
+        }]
+      }
+    });
 
     const modal = document.getElementById('product-modal');
     const modalContent = document.getElementById('modal-content');
