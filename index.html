@@ -18,10 +18,48 @@
         body { font-family: 'Montserrat', sans-serif; background-color: #f8f9fa; }
 
         /* ESTILOS MIGRADOS E ADAPTADOS PARA MICHELLE ACABAMENTOS */
+        .modal-tag-esgotado {
+        position: absolute;
+        top: 50%; /* Centraliza verticalmente */
+        left: 50%; /* Centraliza horizontalmente */
+        background-color: #ef4444; /* Vermelho forte */
+        color: white;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 2.2rem; /* Maior para destaque */
+        font-weight: bold;
+        text-transform: uppercase;
+        z-index: 10; /* Garante que fique acima da imagem */
+        white-space: nowrap; /* Evita que o texto quebre */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para destacar */
+        animation: pulse-modal-tag 2s infinite;
+        }
+
         .destaque-card { background: linear-gradient(170deg, #ffebee, #ffffff 50%); border: 2px solid #FF3A3A; box-shadow: 0 8px 25px rgba(255, 58, 58, 0.2); }
         .destaque-card .product-image { background-color: white; }
         .destaque-card .new-price { color: #FF3A3A; font-size: 1.7rem; }
-        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(255, 58, 58, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 58, 58, 0.8); } }
+        @keyframes pulse-badge {
+          0%, 100% {
+            transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          }
+          50% {
+            transform: translate(-50%, -50%) rotate(-15deg) scale(1.05); /* Aumenta o tamanho */
+            box-shadow: 0 8px 25px rgba(217, 0, 0, 0.6);
+          }
+        }
+
+        /* Animação para a TAG NO MODAL (com rotação de -25 graus) */
+        @keyframes pulse-modal-tag {
+          0%, 100% {
+            transform: translate(-50%, -50%) rotate(-25deg) scale(1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          }
+          50% {
+            transform: translate(-50%, -50%) rotate(-25deg) scale(1.05); /* Aumenta o tamanho */
+            box-shadow: 0 8px 25px rgba(217, 0, 0, 0.6);
+          }
+        }
         .info-adicional { font-size: 0.8rem; font-weight: 600; color: #854d0e; background-color: #fefce8; border: 1px dashed #facc15; border-radius: 6px; padding: 6px 10px; text-align: center; animation: pulse-glow 2.5s infinite; }
         .propaganda-card { background: linear-gradient(45deg, #c31327, #a11020); color: white; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease; height: 100%; }
         .propaganda-card:hover { transform: translateY(-5px); }
@@ -29,7 +67,7 @@
         .propaganda-card .cta-button { background-color: #fff; color: #c31327; padding: 0.75rem 1.5rem; border-radius: 20px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
         .propaganda-card .cta-button:hover { background-color: #f0f0f0; transform: scale(1.05); }
         .new-badge { position: absolute; top: 10px; left: 10px; background-color: #0066cc; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.875rem; z-index: 10; }
-        .soldout-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg); background: #d90000; color: #fff; padding: 10px 40px; border-radius: 8px; font-weight: 800; font-size: 1.5rem; letter-spacing: 1.5px; opacity: 0.95; pointer-events: none; }
+        .soldout-badge { position: absolute; top: 50%; left: 50%; background: #d90000; color: #fff; padding: 10px 40px; border-radius: 8px; font-weight: 800; font-size: 1.5rem; letter-spacing: 1.5px; opacity: 0.95; pointer-events: none;  animation: pulse-badge 2s infinite;}
         
         /* ESTILOS GERAIS */
         .product-card { transition: all 0.3s ease; display: flex; flex-direction: column; }
@@ -118,6 +156,14 @@
         <div id="noResults" class="hidden text-center py-12"><h3 class="text-xl">Nenhum produto encontrado</h3></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="productsContainer"></div>
     </main>
+
+<div id="product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 md:w-2/3 lg:w-1/2 relative max-h-[90vh] overflow-y-auto">
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
+        <div id="modal-content" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
+    </div>
+</div>
 
     <footer class="bg-gray-800 text-white pt-12 pb-6">
     <div class="container mx-auto px-4">
@@ -389,7 +435,7 @@ function renderProducts(productsToRender, targetElement, cardClass = '') {
                     ${product.infoAdicional ? `<div class="info-adicional">${product.infoAdicional}</div>` : ''}
                 </div>
                 <div class="flex gap-2">
-                    <button class="view-details w-1/2 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" data-id="${product.id}">Detalhes</button>
+                    <button class="view-details w-1/2 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition" **onclick="showProductDetailsModal(${product.id})"** data-id="${product.id}">Detalhes</button>
                     <button class="add-to-budget w-1/2 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" data-id="${product.id}">Orçamento +</button>
                 </div>
             </div>`;
@@ -400,6 +446,71 @@ function renderProducts(productsToRender, targetElement, cardClass = '') {
     addBudgetButtonListeners(targetElement); // Listener para o botão de orçamento
     addAdCardListeners(); // Listener para os cards de propaganda
 }
+
+    function showProductDetails(productId) {
+    const product = allProducts.find(p => p.id == productId);
+    if (!product) {
+        console.error("Produto não encontrado para o ID:", productId);
+        return;
+    }
+
+    const modal = document.getElementById('product-modal');
+    const modalContent = document.getElementById('modal-content');
+    const closeModalButton = document.getElementById('close-modal');
+
+    const discount = calculateDiscount(product.oldPrice, product.price);
+    
+    // --- CORREÇÃO AQUI ---
+    const isEsgotado = product.isOutOfStock; // Usamos a propriedade correta (isOutOfStock) que já é true/false
+    // --- FIM DA CORREÇÃO ---
+
+    modalContent.innerHTML = `
+        <div class="relative">
+            <img src="${product.image}" alt="${product.name}" class="w-full h-auto rounded-lg">
+            ${isEsgotado ? '<div class="modal-tag-esgotado">Esgotado</div>' : ''}
+            
+            </div>
+        <div>
+            <h3 class="text-2xl font-bold mb-4">${product.name}</h3>
+            <p class="text-gray-700 text-sm mb-1"><strong>Marca:</strong> ${product.brand || 'N/A'}</p>
+            <p class="text-gray-700 text-sm mb-1"><strong>Código:</strong> ${product.code || 'N/A'}</p>
+            <p class="text-gray-700 text-sm mb-4"><strong>Categoria:</strong> ${product.category || 'N/A'}</p>
+            
+            ${product.oldPrice && product.oldPrice > product.price ? 
+                `<p class="text-lg text-gray-500 line-through mb-1">${formatPrice(product.oldPrice)}</p>` : 
+                ''
+            }
+            <p class="text-3xl font-bold text-red-600 mb-4">${formatPrice(product.price)}</p>
+            ${discount > 0 ? `<p class="text-sm text-green-600 font-semibold mb-4">${discount}% de desconto!</p>` : ''}
+
+            <h4 class="font-bold text-lg mb-2">Descrição:</h4>
+            <p class="text-gray-700 text-base mb-6">${product.description || 'Sem descrição.'}</p>
+
+            <div class="flex flex-col space-y-3">
+                <a href="https://wa.me/47996970021?text=Olá! Tenho interesse no produto: ${encodeURIComponent(product.name)} (Cód: ${product.code})." target="_blank" class="bg-green-500 text-white py-3 rounded-md text-center hover:bg-green-600 flex items-center justify-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Consultar via WhatsApp
+                </a>
+                <button onclick="shareProduct(${product.id})" class="bg-gray-600 text-white py-3 rounded-md text-center hover:bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-share-alt mr-2"></i> Compartilhar Link
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden'); // Mostra o modal
+
+    // Adiciona evento para fechar o modal
+    closeModalButton.onclick = () => {
+        modal.classList.add('hidden');
+    };
+    modal.onclick = (event) => { // Fecha clicando fora
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    };
+}
+
+// ... (antes da função initializePage) ...
 function renderCategories(categories) {
     const categoryContainer = document.getElementById("categoryButtonsContainer");
     if (!categoryContainer) return;
@@ -418,63 +529,7 @@ function renderCategories(categories) {
     });
     addCategoryButtonListeners();
 }
-function showProductDetails(productId) {
-    const product = allProducts.find(p => p.id === productId);
-    if (!product) return;
-    
-    const modal = document.getElementById("productModal");
-    const modalContent = document.getElementById("modalContent");
 
-    // Novo layout de coluna única
-    modalContent.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="w-full h-auto object-contain rounded-lg mb-4 max-h-80 mx-auto">
-        
-        <h3 class="text-2xl font-bold text-gray-800 mb-4">${product.name}</h3>
-        
-        <div class="grid grid-cols-2 gap-x-4 mb-4 text-sm">
-            <p class="text-gray-500"><b>Marca:</b> ${product.brand || ''}</p>
-            <p class="text-gray-500"><b>Código:</b> ${product.code}</p>
-        </div>
-        
-        <div class="flex flex-col items-start mb-4">
-            ${product.oldPrice > product.price ? `<span class="old-price text-lg">${formatPrice(product.oldPrice)}</span>` : ''}
-            <span class="new-price text-3xl font-bold text-green-600">${formatPrice(product.price)}</span>
-            ${calculateDiscount(product.oldPrice, product.price) > 0 ? `<p class="text-red-600 font-semibold text-md mt-1">${calculateDiscount(product.oldPrice, product.price)}% de desconto!</p>` : ''}
-        </div>
-        
-        <div id="modalInfoAdicional" class="info-adicional my-4" style="display: none;"></div>
-
-        <div class="bg-gray-50 p-4 rounded-lg mb-6 border">
-            <h4 class="font-semibold mb-2 text-gray-800">Descrição:</h4>
-            <p class="text-gray-700 whitespace-pre-line">${product.description || 'Sem descrição.'}</p>
-        </div>
-        
-        <div class="flex flex-col sm:flex-row gap-3 mt-auto">
-            <a href="https://wa.me/47996970021?text=Olá!%20Tenho%20interesse%20no%20produto%20${encodeURIComponent(product.name)}%20(Cód:%20${product.code})" target="_blank" class="flex-1 py-3 px-4 whatsapp-btn text-center rounded-lg font-semibold transition flex items-center justify-center gap-2">
-                <i class="fab fa-whatsapp"></i> Falar com Vendedor
-            </a>
-            <button id="modalShare" class="flex-1 py-3 px-4 bg-gray-500 text-white text-center rounded-lg hover:bg-gray-600 font-semibold transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-share-alt"></i> Compartilhar Link
-            </button>
-        </div>
-    `;
-
-    // Ativa o botão de compartilhamento
-    const modalShareButton = modalContent.querySelector('#modalShare');
-    if (modalShareButton) {
-        modalShareButton.onclick = () => shareProduct(product.id);
-    }
-
-    // Mostra a informação adicional se existir
-    const modalInfoAdicional = modalContent.querySelector('#modalInfoAdicional');
-    if (product.infoAdicional) {
-        modalInfoAdicional.textContent = product.infoAdicional;
-        modalInfoAdicional.style.display = 'block';
-    }
-
-    // Exibe o modal
-    modal.classList.add('active');
-}
 
 // ===================================================================
 // LÓGICA DE FILTRAGEM E ORDENAÇÃO
